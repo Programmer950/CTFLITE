@@ -3,12 +3,33 @@ package services
 import (
 	"Backend/internal/cache"
 	"Backend/internal/database"
+	"Backend/internal/utils"
 	"fmt"
+	"time"
 )
 
 func SubmitFlag(participantID int, challengeID int, flag string) (bool, error) {
 
 	var correctFlag string
+
+	banKey := fmt.Sprintf("ban:%d", participantID)
+
+	banned, _ := cache.RDB.Exists(cache.Ctx, banKey).Result()
+	if banned == 1 {
+		return false, fmt.Errorf("temporarily blocked")
+	}
+
+	challengeKey := fmt.Sprintf("attempt:%d:%d", participantID, challengeID)
+
+	count, _ := cache.RDB.Incr(cache.Ctx, challengeKey).Result()
+
+	if count == 1 {
+		cache.RDB.Expire(cache.Ctx, challengeKey, 5*time.Minute)
+	}
+
+	if count > 10 {
+		return false, fmt.Errorf("too many attempts for this challenge")
+	}
 
 	// 1. Get flag from DB
 	query := `SELECT flag_hash FROM challenges WHERE id=$1`
@@ -34,7 +55,7 @@ func SubmitFlag(participantID int, challengeID int, flag string) (bool, error) {
 	}
 
 	// 3. Validate flag
-	isCorrect := (flag == correctFlag)
+	isCorrect := utils.HashFlag(flag) == correctFlag
 	fmt.Println("Input flag:", flag)
 	fmt.Println("Correct flag:", correctFlag)
 	fmt.Println("Is correct?", isCorrect)
@@ -52,6 +73,22 @@ func SubmitFlag(participantID int, challengeID int, flag string) (bool, error) {
 		_, err = cache.RDB.ZIncrBy(cache.Ctx, "leaderboard", float64(points), fmt.Sprint(participantID)).Result()
 		if err != nil {
 			return false, err
+		}
+	} else {
+		failKey := fmt.Sprintf("fail:%d", participantID)
+
+		failCount, _ := cache.RDB.Incr(cache.Ctx, failKey).Result()
+
+		if failCount == 1 {
+			cache.RDB.Expire(cache.Ctx, failKey, 10*time.Minute)
+		}
+
+		if failCount > 30 {
+			cache.RDB.Set(cache.Ctx, fmt.Sprintf("ban:%d", participantID), 1, 15*time.Minute)
+		}
+
+		if failCount > 20 {
+			return false, fmt.Errorf("too many wrong attempts, try later")
 		}
 	}
 
