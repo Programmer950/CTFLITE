@@ -1,0 +1,61 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5rem;
+  text-align: center;
+}
+.home-ctfd-logo {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: 2rem;
+  font-family: inherit;
+}
+.home-ctfd-text {
+  font-size: 8rem;
+  font-weight: 500;
+  color: #2c3035;
+  line-height: 0.8;
+  letter-spacing: -2px;
+}
+.home-subtitle {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.home-link {
+  color: #3d8bfd;
+  text-decoration: none;
+}
+.home-link:hover {
+  text-decoration: underline;
+  color: #6ea8fe;
+}
+.home-social-text {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.home-social-icons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+.home-social-icon {
+  background-color: #3d8bfd;
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.home-social-icon:hover {
+  background-color: #0b5ed7;
+}
+.home-login-prompt {
+  font-size: 1.5rem;
+}

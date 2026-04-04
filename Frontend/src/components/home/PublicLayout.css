@@ -1,0 +1,49 @@
+.public-theme {
+  background-color: #212529;
+  color: #fff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+.public-navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  align-items: center;
+}
+.public-nav-left, .public-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+.public-brand {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #fff;
+  text-decoration: none;
+  margin-right: 10px;
+}
+.public-nav-link {
+  color: #adb5bd;
+  text-decoration: none;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.public-nav-link:hover {
+  color: #fff;
+}
+.public-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.public-footer {
+  text-align: center;
+  padding: 1.5rem;
+  color: #adb5bd;
+  font-size: 0.875rem;
+}
