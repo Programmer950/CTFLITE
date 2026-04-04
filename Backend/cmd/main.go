@@ -5,6 +5,9 @@ import (
 	"Backend/internal/database"
 	"Backend/internal/handlers"
 	"Backend/internal/middleware"
+	"time"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -20,6 +23,15 @@ func main() {
 	cache.ConnectRedis()
 
 	r := gin.Default()
+
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://100.121.109.21:5173"}, // Your Vite dev server
+		AllowMethods:     []string{"POST", "GET", "OPTIONS", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}))
 
 	r.POST("/register", handlers.Register)
 	r.POST("/login", handlers.Login)
