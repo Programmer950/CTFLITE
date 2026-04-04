@@ -2,7 +2,6 @@ package services
 
 import (
 	"Backend/internal/database"
-	"database/sql"
 )
 
 func CreateUser(username, passwordHash string) error {
@@ -11,16 +10,17 @@ func CreateUser(username, passwordHash string) error {
 	return err
 }
 
-func GetUserByUsername(username string) (int, string, error) {
+func GetUserByUsername(username string) (int, string, bool, error) {
 	var id int
 	var hash string
+	var isAdmin bool
 
-	query := `SELECT id, password_hash FROM users WHERE username=$1`
-	err := database.DB.QueryRow(query, username).Scan(&id, &hash)
+	query := `SELECT id, password_hash, is_admin FROM users WHERE username=$1`
 
-	if err == sql.ErrNoRows {
-		return 0, "", err
+	err := database.DB.QueryRow(query, username).Scan(&id, &hash, &isAdmin)
+	if err != nil {
+		return 0, "", false, err
 	}
 
-	return id, hash, err
+	return id, hash, isAdmin, nil
 }

@@ -1,19 +1,23 @@
 package utils
 
 import (
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var secretKey = []byte("supersecretkey")
+func getSecret() []byte {
+	return []byte(os.Getenv("JWT_SECRET"))
+}
 
-func GenerateToken(userID int) (string, error) {
+func GenerateToken(userID int, isAdmin bool) (string, error) {
 	claims := jwt.MapClaims{
-		"user_id": userID,
-		"exp":     time.Now().Add(time.Hour * 24).Unix(),
+		"user_id":  userID,
+		"is_admin": isAdmin,
+		"exp":      time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(secretKey)
+	return token.SignedString(getSecret())
 }
