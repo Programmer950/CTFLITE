@@ -1,0 +1,34 @@
+services:
+
+  backend:
+    build: .
+    container_name: ctf-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    container_name: ctf-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: ctflite
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./internal/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis:7
+    container_name: ctf-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:

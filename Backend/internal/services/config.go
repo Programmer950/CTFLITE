@@ -2,6 +2,7 @@ package services
 
 import (
 	"Backend/internal/database"
+	"log"
 	"strconv"
 )
 
@@ -16,16 +17,23 @@ func GetMode() (string, error) {
 }
 
 func GetIntConfig(key string) (int, error) {
-	var val string
+	var value string
 
 	err := database.DB.QueryRow(
 		`SELECT value FROM config WHERE key=$1`,
 		key,
-	).Scan(&val)
+	).Scan(&value)
 
 	if err != nil {
+		log.Println("CONFIG FETCH ERROR:", err)
 		return 0, err
 	}
 
-	return strconv.Atoi(val)
+	intVal, err := strconv.Atoi(value)
+	if err != nil {
+		log.Println("CONFIG PARSE ERROR:", err)
+		return 0, err
+	}
+
+	return intVal, nil
 }
