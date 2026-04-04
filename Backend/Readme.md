@@ -1,4 +1,13 @@
 # 🏴‍☠️ CTF Platform Backend API Guide
+
+## Running Backend Using Docker
+
+- **Open Termninal in Backend directory and run command:**
+```
+docker compose up --build
+```
+- **Backend would be live at http://localhost:8080**
+
 ## 🌐 Base URL
 
 ### http://localhost:8080

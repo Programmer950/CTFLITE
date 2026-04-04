@@ -16,7 +16,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://100.127.119.44:8080/api/login', { username, password });
+      const response = await axios.post('http://localhost:8080/api/login', { username, password });
 
       // Assume data contains { token: "JWT_TOKEN" }
       if (response.data.token) {

@@ -17,7 +17,7 @@ export default function Register() {
     setLoading(true);
 
     const api = axios.create({
-      baseURL: 'http://100.127.119.44:8080',
+      baseURL: 'http://localhost:8080',
     });
 
     try {
