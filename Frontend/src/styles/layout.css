@@ -1,0 +1,35 @@
+/* PAGE CONTAINER */
+.page-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* MAIN GRID (Challenges + Leaderboard) */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* RESPONSIVE FIX */
+@media (max-width: 900px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* STATS GRID SPACING FIX (optional but helps) */
+.stats-row {
+    margin-bottom: 2rem;
+}
+
+/* PANEL SPACING */
+.panel {
+    height: fit-content;
+}
+
+.section-wrapper {
+    margin-bottom: 2rem;
+}

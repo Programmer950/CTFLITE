@@ -1,0 +1,198 @@
+.users-page {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.page-header.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 83px;
+}
+
+/* ADD BUTTON */
+.add-btn {
+    background: none;
+    border: 1px solid #22d3ee;
+    border-radius: 50%;
+    padding: 6px;
+    cursor: pointer;
+    color: #22d3ee;
+}
+
+/* CONTROLS */
+.users-controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.users-controls input {
+    flex: 1;
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 10px;
+    border-radius: 8px;
+    color: #e5e7eb;
+}
+
+.search-btn {
+    background: #22d3ee;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* TABLE */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #0f172a;
+}
+
+th {
+    text-align: left;
+    padding: 14px;
+    font-size: 22px;
+    color: #9ca3af;
+}
+
+td {
+    padding: 15px;
+    border-top: 1px solid #1f2937;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* BADGES */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 18px;
+}
+
+.badge.admin {
+    background: #2563eb;
+}
+
+.badge.hidden {
+    background: #ef4444;
+}
+
+.badge.active {
+    background: #10b981;
+}
+
+/* ACTIONS */
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.icon-btn:hover {
+    border-color: #22d3ee;
+}
+
+.icon-btn.danger:hover {
+    border-color: #ef4444;
+}
+
+.icon-btn svg {
+    color: #e5e7eb;  /* white */
+}
+
+.icon-btn:hover svg {
+    color: #22d3ee; /* cyan on hover */
+}
+
+.icon-btn.danger:hover svg {
+    color: #ef4444; /* red for delete */
+}
+
+/* MODAL OVERLAY */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(2, 6, 23, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+/* MODAL */
+.modal {
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    border-radius: 12px;
+    padding: 24px;
+    width: 500px;
+}
+
+/* TITLE */
+.modal h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+/* FORM */
+.modal .form-group {
+    margin-bottom: 16px;
+}
+
+.modal input {
+    width: 100%;
+}
+
+/* CHECKBOX ROW */
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+/* ACTIONS */
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel {
+    background: none;
+    border: 1px solid #1f2937;
+    color: #e5e7eb;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}

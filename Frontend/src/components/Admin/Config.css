@@ -1,0 +1,140 @@
+/* PAGE */
+.config-page {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* LAYOUT */
+.config-container {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 40px;
+}
+
+/* SIDEBAR */
+.config-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* TAB */
+.tab {
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid #1f2937;
+    cursor: pointer;
+    font-size: 18px;
+    color: #9ca3af;
+
+    transition: all 0.2s ease;
+}
+
+.tab:hover {
+    border-color: #22d3ee;
+    color: #e5e7eb;
+}
+
+/* ACTIVE TAB (🔥 glow) */
+.tab.active {
+    color: #22d3ee;
+    border-color: #22d3ee;
+
+    box-shadow:
+            0 0 10px rgba(34, 211, 238, 0.3),
+            inset 0 0 10px rgba(34, 211, 238, 0.1);
+
+    background: rgba(34, 211, 238, 0.05);
+}
+
+/* CONTENT */
+.config-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* SECTION TITLE */
+.config-content h2 {
+    font-size: 36px;
+    color: #e5e7eb;
+}
+
+/* CARD (🔥 important upgrade) */
+.config-card {
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    padding: 24px;
+
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* FORM */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 18px;
+}
+
+label {
+    font-size: 16px;
+    color: #9ca3af;
+}
+
+/* INPUTS */
+input,
+textarea,
+select {
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 12px;
+    border-radius: 10px;
+    color: #e5e7eb;
+    font-size: 16px;
+
+    transition: 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #22d3ee;
+    outline: none;
+    box-shadow: 0 0 6px rgba(34, 211, 238, 0.3);
+}
+
+/* CHECKBOX */
+.checkbox {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+/* BUTTON */
+.form-actions {
+    margin-top: 20px;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+.submit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.4);
+}

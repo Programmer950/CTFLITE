@@ -1,0 +1,140 @@
+.submissions-page {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.page-header.center {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 83px;
+}
+
+/* CONTROLS */
+.controls {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filter-select {
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 10px;
+    border-radius: 8px;
+    color: #e5e7eb;
+}
+
+.controls input {
+    flex: 1;
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 10px;
+    border-radius: 8px;
+    color: #e5e7eb;
+}
+
+.search-btn {
+    background: #22d3ee;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* TABLE */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #0f172a;
+}
+
+th {
+    text-align: left;
+    padding: 14px;
+    font-size: 22px;
+    color: #9ca3af;
+}
+
+td {
+    padding: 14px;
+    font-size: 16px;
+    border-top: 1px solid #1f2937;
+    color: #e5e7eb;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* BADGES */
+.badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 18px;
+}
+
+.badge.correct {
+    background: #10b981;
+}
+
+.badge.incorrect {
+    background: #ef4444;
+}
+
+.badge.type {
+    background: #22d3ee;
+    color: #020617;
+}
+
+/* PROVIDED TEXT */
+.provided {
+    font-family: monospace;
+    color: #9ca3af;
+}
+
+/* ACTIONS */
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-btn {
+    background: #020617;
+    border: 1px solid #1f2937;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.icon-btn svg {
+    color: #e5e7eb;
+}
+
+.icon-btn:hover {
+    border-color: #22d3ee;
+}
+
+.icon-btn:hover svg {
+    color: #22d3ee;
+}
+
+.icon-btn.danger:hover {
+    border-color: #ef4444;
+}
+
+.icon-btn.danger:hover svg {
+    color: #ef4444;
+}

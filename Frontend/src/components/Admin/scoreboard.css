@@ -1,0 +1,88 @@
+.scoreboard-page {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* HEADER */
+.page-header.center {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    font-size: 83px; /* MATCH USERS */
+}
+
+/* TABLE */
+.table-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: #0f172a;
+}
+
+th {
+    text-align: left;
+    padding: 16px;
+    font-size: 22px;
+    color: #9ca3af;
+}
+
+td {
+    padding: 16px;
+    font-size: 16px;
+    border-top: 1px solid #1f2937;
+    color: #e5e7eb;
+}
+
+tr:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+/* PLACE */
+.place {
+    font-weight: 600;
+    color: #22d3ee;
+}
+
+/* USERNAME */
+.username {
+    font-size: 17px;
+    font-weight: 500;
+}
+
+/* SCORE */
+.score {
+    font-weight: 600;
+}
+
+/* BADGES */
+.badge {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.badge.active {
+    background: #10b981;
+}
+
+.badge.hidden {
+    background: #ef4444;
+}
+
+tr:nth-child(1) {
+    background: rgba(34, 211, 238, 0.05);
+}
+
+.score {
+    color: #22d3ee;
+}

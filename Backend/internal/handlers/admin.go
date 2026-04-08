@@ -28,7 +28,8 @@ func CreateChallenge(c *gin.Context) {
 	}
 
 	query := `
-	INSERT INTO challenges (title, description, points, flag_hash, category, difficulty) VALUES ($1, $2, $3, $4, $5, $6)
+	INSERT INTO challenges (title, description, points, flag_hash, category, difficulty)
+	VALUES ($1, $2, $3, $4, $5, $6)
 	`
 
 	_, err := database.DB.Exec(query,
@@ -36,10 +37,12 @@ func CreateChallenge(c *gin.Context) {
 		req.Description,
 		req.Points,
 		utils.HashFlag(req.Flag),
+		req.Category,   // ✅ ADD THIS
+		req.Difficulty, // ✅ ADD THIS
 	)
 
 	if err != nil {
-		c.JSON(500, gin.H{"error": "failed to create challenge"})
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -49,7 +52,7 @@ func CreateChallenge(c *gin.Context) {
 func GetAllChallenges(c *gin.Context) {
 
 	rows, err := database.DB.Query(
-		`SELECT id, title, description, points, flag_hash FROM challenges`,
+		`SELECT id, title, description, points, flag_hash, category, difficulty FROM challenges`,
 	)
 	if err != nil {
 		c.JSON(500, gin.H{"error": "failed to fetch challenges"})
@@ -63,13 +66,23 @@ func GetAllChallenges(c *gin.Context) {
 		Description string `json:"description"`
 		Points      int    `json:"points"`
 		Flag        string `json:"flag"`
+		Category    string `json:"category"`   // ✅ added
+		Difficulty  string `json:"difficulty"` // ✅ added
 	}
 
 	challenges := make([]Challenge, 0)
 
 	for rows.Next() {
 		var ch Challenge
-		err := rows.Scan(&ch.ID, &ch.Title, &ch.Description, &ch.Points, &ch.Flag)
+		err := rows.Scan(
+			&ch.ID,
+			&ch.Title,
+			&ch.Description,
+			&ch.Points,
+			&ch.Flag,
+			&ch.Category,   // ✅ added
+			&ch.Difficulty, // ✅ added
+		)
 		if err != nil {
 			continue
 		}

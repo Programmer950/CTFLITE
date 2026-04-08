@@ -66,7 +66,7 @@ ALTER TABLE public.config OWNER TO postgres;
 
 INSERT INTO config (key, value) VALUES ('max_users', '100');
 INSERT INTO config (key, value) VALUES ('team_size_limit', '5');
-INSERT INTO config (key, value) VALUES ('mode', 'team');
+INSERT INTO config (key, value) VALUES ('mode', 'individual');
 
 --
 -- Name: events; Type: TABLE; Schema: public; Owner: postgres
@@ -264,7 +264,7 @@ ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
-
+insert into users values (1, 'Admin', '$2a$14$joSYvbAGdhKuV1Y5CBnpP.6GXVvkyPZqTRdptf0YFDo7QbMh1JGHO', '2026-04-08 14:09:06.692421', 't');
 --
 -- Name: challenges id; Type: DEFAULT; Schema: public; Owner: postgres
 --

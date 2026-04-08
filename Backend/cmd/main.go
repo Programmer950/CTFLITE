@@ -60,8 +60,10 @@ func main() {
 
 	api.GET("/me", func(c *gin.Context) {
 		userID, _ := c.Get("user_id")
+		role, _ := c.Get("is_admin")
 		c.JSON(200, gin.H{
 			"user_id": userID,
+			"role":    role,
 		})
 	})
 
