@@ -27,6 +27,7 @@ import TeamsPage from "./pages/TeamsPage.jsx";
 import  RulesPage from "./pages/RulesPage.jsx";
 import EditChallenge from "./components/Admin/EditChallenges.jsx";
 import BuilderPage from "./builder/BuilderPage.jsx";
+import ThemeSettings from "./pages/ThemeSettings.jsx";
 
 export default function App() {
     return (
@@ -79,6 +80,12 @@ export default function App() {
                             path="/builder"
                             element={
                             <BuilderPage />
+                            }
+                        />
+                        <Route
+                            path="/themesettings"
+                            element={
+                                <ThemeSettings />
                             }
                         />
                         <Route path="login" element={<Login />} />

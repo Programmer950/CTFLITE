@@ -277,3 +277,13 @@
 .builder-root .page-wrapper {
     scrollbar-width: thin;
 }
+
+.builder-root {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* 🔥 ONLY lock body when builder is active */
+body.builder-active {
+    overflow: hidden;
+}

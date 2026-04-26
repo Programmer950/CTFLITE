@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useConfig } from "../context/ConfigContext";
 import HomePage from "../pages/HomePage";
 import Sidebar from "./Sidebar";
@@ -6,6 +6,15 @@ import PropertiesPanel from "./PropertiesPanel";
 import Navbar from "../components/Navbar";
 
 export default function BuilderPage() {
+
+    useEffect(() => {
+        document.body.classList.add("builder-active");
+
+        return () => {
+            document.body.classList.remove("builder-active");
+        };
+    }, []);
+
     const { config, setConfig } = useConfig();
     const [currentPage, setCurrentPage] = useState("home");
     const [selectedIndex, setSelectedIndex] = useState(null);
