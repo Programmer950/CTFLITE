@@ -5,6 +5,7 @@ import (
 	"Backend/internal/database"
 	"Backend/internal/handlers"
 	"Backend/internal/middleware"
+	"fmt"
 	"log"
 	"time"
 
@@ -44,6 +45,7 @@ func main() {
 	// 🔓 Public routes
 	r.POST("/api/register", handlers.Register)
 	r.POST("/api/login", handlers.Login)
+	r.GET("/api/config", handlers.GetConfig)
 
 	// 🔐 Protected routes
 	api := r.Group("/api")
@@ -57,13 +59,67 @@ func main() {
 	api.GET("/scoreboard", handlers.GetScoreboard)
 	api.GET("/challenges", handlers.GetChallenges)
 	api.GET("/teams/me", handlers.GetMyTeam)
-
+	api.GET("/stats", handlers.GetStats)
+	api.GET("/categories", handlers.GetCategories)
 	api.GET("/me", func(c *gin.Context) {
-		userID, _ := c.Get("user_id")
-		role, _ := c.Get("is_admin")
+		userID := c.GetInt("user_id")
+
+		// 🟢 Get username + admin flag
+		var username string
+		var isAdmin bool
+
+		err := database.DB.QueryRow(
+			`SELECT username, is_admin FROM users WHERE id=$1`,
+			userID,
+		).Scan(&username, &isAdmin)
+
+		if err != nil {
+			c.JSON(500, gin.H{"error": "failed to fetch user"})
+			return
+		}
+
+		// 🟢 Get participant ID
+		var participantID int
+		err = database.DB.QueryRow(
+			`SELECT id FROM participants WHERE user_id=$1`,
+			userID,
+		).Scan(&participantID)
+
+		if err != nil {
+			// user has not participated yet
+			c.JSON(200, gin.H{
+				"username":     username,
+				"is_admin":     isAdmin,
+				"score":        0,
+				"rank":         0,
+				"solved_count": 0,
+			})
+			return
+		}
+
+		// 🟢 Get score from Redis leaderboard
+		score, _ := cache.RDB.ZScore(cache.Ctx, "leaderboard", fmt.Sprint(participantID)).Result()
+
+		// 🟢 Get rank (Redis is 0-based)
+		rank, _ := cache.RDB.ZRevRank(cache.Ctx, "leaderboard", fmt.Sprint(participantID)).Result()
+
+		// 🟢 Get solved count
+		var solvedCount int
+		err = database.DB.QueryRow(
+			`SELECT COUNT(*) FROM submissions WHERE participant_id=$1 AND is_correct=true`,
+			participantID,
+		).Scan(&solvedCount)
+
+		if err != nil {
+			solvedCount = 0
+		}
+
 		c.JSON(200, gin.H{
-			"user_id": userID,
-			"role":    role,
+			"username":     username,
+			"is_admin":     isAdmin,
+			"score":        int(score),
+			"rank":         int(rank) + 1, // convert to 1-based
+			"solved_count": solvedCount,
 		})
 	})
 
@@ -87,6 +143,7 @@ func main() {
 	admin.DELETE("/submissions", handlers.ResetSubmissions)
 	admin.POST("/reset-leaderboard", handlers.ResetLeaderboard)
 	admin.POST("/rebuild-leaderboard", handlers.RebuildLeaderboardHandler)
+	admin.POST("/config", handlers.SaveConfig)
 
 	// 🚀 Start server
 	if err := r.Run(":8080"); err != nil {

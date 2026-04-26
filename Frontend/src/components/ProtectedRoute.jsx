@@ -12,7 +12,7 @@ export default function ProtectedRoute({ children }) {
     }
 
     // ❌ not admin
-    if (!user.role) {
+    if (!user.is_admin) {
         return <Navigate to="/" />;
     }
 

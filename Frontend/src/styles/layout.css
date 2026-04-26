@@ -1,35 +1,279 @@
-/* PAGE CONTAINER */
+/* ================= DESIGN TOKENS ================= */
+
+:root {
+    --space-xs: 6px;
+    --space-sm: 10px;
+    --space-md: 16px;
+    --space-lg: 24px;
+}
+
+/* ================= PAGE (USER) ================= */
+
 .page-wrapper {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 2rem 1.5rem;
+    padding: var(--space-lg) var(--space-md);
 }
 
-/* MAIN GRID (Challenges + Leaderboard) */
+/* ================= MAIN GRID ================= */
+
 .main-grid {
     display: grid;
     grid-template-columns: 1fr 340px;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
 }
 
-/* RESPONSIVE FIX */
 @media (max-width: 900px) {
     .main-grid {
         grid-template-columns: 1fr;
     }
 }
 
-/* STATS GRID SPACING FIX (optional but helps) */
 .stats-row {
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-lg);
 }
 
-/* PANEL SPACING */
-.panel {
-    height: fit-content;
-}
+/* ================= GENERIC ================= */
 
 .section-wrapper {
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-lg);
+    position: relative;
+}
+
+/* ================= BUILDER LAYOUT ================= */
+
+.builder-root {
+    display: grid;
+    grid-template-columns: 260px 1fr 320px;
+    height: 100vh;        /* full screen */
+    overflow: hidden;     /* 🔥 prevent page scroll */
+}
+
+/* ================= SCROLL FIX ================= */
+
+.builder-root .sidebar,
+.builder-root .panel,
+.builder-root .page-wrapper {
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* ================= SIDEBAR ================= */
+
+.builder-root .sidebar {
+    background: var(--surface-fixed);
+    color: var(--text-fixed);
+    border-right: 1px solid var(--border-fixed);
+    padding: var(--space-md);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+
+    box-shadow: 2px 0 20px rgba(0,0,0,0.3);
+    overflow-y: auto;
+    height: 100%;
+}
+/* ================= PANEL ================= */
+
+.builder-root .panel {
+    background: var(--surface-fixed);
+    color: var(--text-fixed);
+    border-left: 1px solid var(--border-fixed);
+    padding: var(--space-md);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+
+    box-shadow: -2px 0 20px rgba(0,0,0,0.3);
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* ================= BUTTONS ================= */
+
+.builder-root .sidebar button {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-md);
+
+    background: var(--surface2-fixed);
+    border: 1px solid var(--border-fixed);
+    color: var(--text-fixed);
+
+    text-align: left;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.builder-root .sidebar button:hover {
+    background: var(--hover-fixed);
+    border-color: var(--accent-fixed);
+    transform: translateY(-1px);
+}
+
+.builder-root .sidebar button:active {
+    transform: scale(0.98);
+}
+
+/* ================= BUILDER INTERACTIONS ================= */
+
+.builder-root .section-wrapper {
+    cursor: grab;
+}
+
+.builder-root .page-wrapper {
+    max-width: 100%;
+    margin: 0;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.builder-root .section-wrapper:active {
+    cursor: grabbing;
+}
+
+.builder-root .section-wrapper:hover {
+    outline: 1px dashed var(--accent-fixed);
+}
+
+/* ================= OVERLAY ================= */
+
+.section-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    cursor: pointer;
+}
+
+/* ================= DRAG HANDLE ================= */
+
+.drag-handle {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+
+    cursor: grab;
+    background: var(--surface-fixed);
+    color: var(--text-fixed);
+
+    padding: 4px 6px;
+    border-radius: 6px;
+    font-size: 13px;
+
+    border: 1px solid var(--border-fixed);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* ================= SELECTED BORDER ================= */
+
+.section-selected-border {
+    position: absolute;
+    inset: 0;
+    border: 2px solid var(--accent-fixed);
+    pointer-events: none;
+    z-index: 6;
+
+    box-shadow: 0 0 10px var(--accent-fixed);
+}
+
+/* ================= FORM ================= */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.field label {
+    font-size: 11px;
+    color: var(--text-muted-fixed);
+}
+
+.field input {
+    padding: 10px;
+    border-radius: var(--radius-md);
+
+    border: 1px solid var(--border-fixed);
+    background: var(--surface2-fixed);
+    color: var(--text-fixed);
+
+    transition: all 0.2s ease;
+}
+
+.field input:focus {
+    outline: none;
+    border-color: var(--accent-fixed);
+    box-shadow: 0 0 0 2px rgba(0,212,255,0.15);
+}
+
+.field input[type="color"] {
+    height: 32px;
+    padding: 2px;
+}
+
+/* ================= DELETE BUTTON ================= */
+
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10001;
+
+    background: rgba(0,0,0,0.6);
+    color: white;
+    border: none;
+
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.delete-btn:hover {
+    background: var(--danger);
+}
+
+/* ================= SECTION VISUAL ================= */
+
+.builder-root .section-wrapper > * {
+    border-radius: var(--radius-lg);
+    transition: 0.2s;
+}
+
+/* ================= PANEL HEADERS ================= */
+
+.panel h3 {
+    font-size: 14px;
+    margin-bottom: var(--space-sm);
+    color: var(--text-fixed);
+}
+
+.panel h4 {
+    font-size: 11px;
+    color: var(--text-muted-fixed);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ================= DIVIDER ================= */
+
+.divider {
+    height: 1px;
+    background: var(--border-fixed);
+    margin: var(--space-sm) 0;
+}
+
+.sidebar,
+.panel,
+.builder-root .page-wrapper {
+    scrollbar-width: thin;
 }

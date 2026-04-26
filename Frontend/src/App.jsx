@@ -2,8 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ConfigProvider } from "./context/ConfigContext.jsx";
-import siteConfig from "./config/siteConfig";
-import { applyTheme } from "./utils/applyTheme";
 
 import "./index.css";
 import "./styles/theme.css";
@@ -28,13 +26,9 @@ import ScoreboardPage from "./pages/ScoreboardPage.jsx";
 import TeamsPage from "./pages/TeamsPage.jsx";
 import  RulesPage from "./pages/RulesPage.jsx";
 import EditChallenge from "./components/Admin/EditChallenges.jsx";
-
-import { useEffect } from "react";
+import BuilderPage from "./builder/BuilderPage.jsx";
 
 export default function App() {
-    useEffect(() => {
-        applyTheme(siteConfig.theme);
-    }, []);
     return (
         <BrowserRouter>
             <AuthProvider>
@@ -79,6 +73,12 @@ export default function App() {
                                 <PlayerLayout>
                                     <TeamsPage />
                                 </PlayerLayout>
+                            }
+                        />
+                        <Route
+                            path="/builder"
+                            element={
+                            <BuilderPage />
                             }
                         />
                         <Route path="login" element={<Login />} />

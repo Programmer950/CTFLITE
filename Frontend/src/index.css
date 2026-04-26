@@ -1,27 +1,84 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;800&display=swap');
 
 :root {
+    /* ---------------- USER THEME (DYNAMIC) ---------------- */
+
     --bg: #0a0d14;
     --surface: #0f1420;
     --surface2: #151c2e;
     --border: #1e2d4a;
-
     --accent: #00d4ff;
     --accent2: #7c3aed;
     --accent3: #10b981;
     --warn: #f59e0b;
     --danger: #ef4444;
-
     --text: #e2e8f0;
     --text-muted: #64748b;
     --text-dim: #94a3b8;
+    --black: #000000;
+    --white: #ffffff;
+    --gold: #fbbf24;
+    --silver: #94a3b8;
+    --bronze: #cd7c2f;
+    --success: #22c55e;
+    --error: #ef4444;
 
-    --glow: 0 0 20px rgba(0,212,255,0.15);
-    --glow-strong: 0 0 40px rgba(0,212,255,0.3);
+    --opacity-nav-bg: rgba(10,13,20,0.95);
+    --opacity-hover-accent-soft: rgba(0,212,255,0.08);
+    --opacity-hover-accent-very-soft: rgba(0,212,255,0.03);
+    --opacity-border-soft: rgba(30,45,74,0.5);
+    --opacity-border-very-soft: rgba(30,45,74,0.4);
+    --opacity-modal-overlay: rgba(0,0,0,0.6);
+    --opacity-modal-overlay-strong: rgba(0,0,0,0.7);
+    --opacity-hero-radial: rgba(0,212,255,0.08);
+    --opacity-hero-text-bg: rgba(0,212,255,0.04);
+    --opacity-success-soft: rgba(16,185,129,0.12);
+    --opacity-warn-soft: rgba(245,158,11,0.12);
+    --opacity-danger-soft: rgba(239,68,68,0.12);
 
+    --gradient-avatar: linear-gradient(135deg, #06b6d4, #3b82f6);
+    --gradient-hero-bg: linear-gradient(135deg, #0d1a2e, #0f1420);
+    --gradient-cta: linear-gradient(90deg, #06b6d4, #22d3ee);
+
+    --effect-glow: 0 0 20px rgba(0,212,255,0.15);
+    --effect-glow-strong: 0 0 40px rgba(0,212,255,0.3);
+    --effect-text-glow: 0 0 10px rgba(0,212,255,0.5);
+    --effect-text-glow-strong: 0 0 8px rgba(0,212,255,0.6);
+    --effect-box-shadow-heavy: 0 10px 30px rgba(0,0,0,0.5);
+    --effect-box-shadow-modal: 0 10px 40px rgba(0,0,0,0.6);
+
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-pill: 20px;
+    --radius-circle: 50%;
+    --radius-base: 8px;
     --radius: 8px;
-}
 
+    --effect-ctaShadow: 0 0 30px rgba(34,211,238,0.4);
+    --effect-glow10px: 0 0 10px rgba(0,212,255,0.6);
+    --gradient-avatarReversed: linear-gradient(135deg, #3b82f6, #06b6d4);
+    --customOrange: orange;
+
+
+    /* ---------------- BUILDER / ADMIN (FIXED UI) ---------------- */
+
+    --bg-fixed: #0f172a;
+    --surface-fixed: #111827;
+    --surface2-fixed: #1f2937;
+    --border-fixed: #374151;
+
+    --text-fixed: #e5e7eb;
+    --text-muted-fixed: #9ca3af;
+
+    --accent-fixed: #3b82f6; /* subtle blue for UI */
+
+    --hover-fixed: rgba(255, 255, 255, 0.05);
+
+    --shadow-fixed: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    --radius-fixed: 6px;
+}
 * {
     margin: 0;
     padding: 0;
