@@ -6,8 +6,11 @@ import {
     User,
     Settings,
     LogOut,
-    LogIn
+    LogIn,
+    Bell
 } from "lucide-react";
+import { useNotification } from "../context/NotificationContext";
+import NotificationPanel from "./Notifications/NotificationPanel.jsx";
 
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -18,6 +21,8 @@ export default function Navbar({ isBuilder = false, onSelect }) {
     const location = useLocation();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
+    const { unreadCount } = useNotification();
+    const [openNotif, setOpenNotif] = useState(false);
 
     const { token, logout } = useAuth();
     const { config } = useConfig();
@@ -105,6 +110,23 @@ export default function Navbar({ isBuilder = false, onSelect }) {
 
             {/* RIGHT */}
             <div className="nav-right">
+
+                <div className="nav-bell-wrapper">
+                    <div
+                        className="nav-bell"
+                        onClick={() => setOpenNotif(prev => !prev)}
+                    >
+                        <Bell size={18} />
+
+                        {unreadCount > 0 && (
+                            <span className="notif-badge">
+                {unreadCount}
+            </span>
+                        )}
+                    </div>
+
+                    {openNotif && <NotificationPanel />}
+                </div>
 
                 {!token ? (
                     <button

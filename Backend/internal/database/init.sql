@@ -472,6 +472,25 @@ ALTER TABLE ONLY public.team_members
     ADD CONSTRAINT team_members_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE;
 
 
+
+CREATE TABLE notifications (
+                               id SERIAL PRIMARY KEY,
+                               title TEXT NOT NULL,
+                               content TEXT NOT NULL,
+                               type TEXT NOT NULL,
+                               play_sound BOOLEAN DEFAULT false,
+                               target TEXT DEFAULT 'all',
+                               created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE user_notifications (
+                                    id SERIAL PRIMARY KEY,
+                                    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+                                    notification_id INT REFERENCES notifications(id) ON DELETE CASCADE,
+                                    read BOOLEAN DEFAULT false
+);
+
+
 --
 -- PostgreSQL database dump complete
 --

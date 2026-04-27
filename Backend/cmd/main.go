@@ -122,6 +122,11 @@ func main() {
 			"solved_count": solvedCount,
 		})
 	})
+	api.GET("/notifications", handlers.GetNotifications)
+	api.PATCH("/notifications/:id/read", handlers.MarkNotificationRead)
+	api.PATCH("/notifications/read-all", handlers.MarkAllNotificationsRead)
+	api.DELETE("/notifications/:id", handlers.DeleteNotification)
+	api.GET("/notifications/stream", handlers.NotificationStream)
 
 	// 👥 Team routes (only in team mode)
 	team := api.Group("/teams")
@@ -144,6 +149,8 @@ func main() {
 	admin.POST("/reset-leaderboard", handlers.ResetLeaderboard)
 	admin.POST("/rebuild-leaderboard", handlers.RebuildLeaderboardHandler)
 	admin.POST("/config", handlers.SaveConfig)
+	admin.POST("/notifications", handlers.CreateNotification)
+	admin.GET("/notifications", handlers.GetAllNotifications)
 
 	// 🚀 Start server
 	if err := r.Run(":8080"); err != nil {

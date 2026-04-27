@@ -16,23 +16,30 @@ func getSecret() []byte {
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		authHeader := c.GetHeader("Authorization")
+		var tokenString string
 
-		if authHeader == "" {
+		// 🔵 1. Try Authorization header
+		authHeader := c.GetHeader("Authorization")
+		if authHeader != "" {
+			parts := strings.Split(authHeader, " ")
+			if len(parts) == 2 {
+				tokenString = parts[1]
+			}
+		}
+
+		// 🟡 2. Fallback for SSE → query param
+		if tokenString == "" {
+			tokenString = c.Query("token")
+		}
+
+		// 🔴 3. No token at all
+		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "missing token"})
 			c.Abort()
 			return
 		}
 
-		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
-			c.Abort()
-			return
-		}
-
-		tokenString := parts[1]
-
+		// 🔐 4. Parse JWT
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			return getSecret(), nil
 		})
@@ -43,11 +50,25 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		claims := token.Claims.(jwt.MapClaims)
-		userID := int(claims["user_id"].(float64))
+		// 🧠 5. Extract claims safely
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid claims"})
+			c.Abort()
+			return
+		}
 
-		c.Set("user_id", userID)
-		c.Set("is_admin", claims["is_admin"].(bool))
+		userIDFloat, ok := claims["user_id"].(float64)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid user_id"})
+			c.Abort()
+			return
+		}
+
+		isAdmin, _ := claims["is_admin"].(bool)
+
+		c.Set("user_id", int(userIDFloat))
+		c.Set("is_admin", isAdmin)
 
 		c.Next()
 	}
