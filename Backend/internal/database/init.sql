@@ -490,7 +490,30 @@ CREATE TABLE user_notifications (
                                     read BOOLEAN DEFAULT false
 );
 
+ALTER TABLE challenges
+    ADD COLUMN type TEXT DEFAULT 'standard',
 
+ADD COLUMN initial_value INT,
+ADD COLUMN decay INT,
+ADD COLUMN min_value INT,
+
+ADD COLUMN flag_type TEXT DEFAULT 'static',
+ADD COLUMN case_sensitive BOOLEAN DEFAULT false,
+
+ADD COLUMN state TEXT DEFAULT 'visible',
+ADD COLUMN max_attempts INT DEFAULT 0,
+
+ADD COLUMN author TEXT,
+
+ADD COLUMN tags TEXT[],
+ADD COLUMN hints TEXT[],
+ADD COLUMN file_url TEXT;
+ALTER TABLE submissions ADD COLUMN provided_flag TEXT;
+ALTER TABLE submissions
+    ADD COLUMN created_at TIMESTAMP DEFAULT NOW();
+ALTER TABLE users
+    ADD COLUMN email TEXT;
+UPDATE users SET email = username || '@ctf.local' WHERE email IS NULL;
 --
 -- PostgreSQL database dump complete
 --

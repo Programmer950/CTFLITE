@@ -26,6 +26,7 @@ func main() {
 	cache.ConnectRedis()
 
 	r := gin.Default()
+	r.Static("/uploads", "./uploads")
 
 	// ✅ CORS
 	r.Use(cors.New(cors.Config{
@@ -128,6 +129,12 @@ func main() {
 	api.DELETE("/notifications/:id", handlers.DeleteNotification)
 	api.GET("/notifications/stream", handlers.NotificationStream)
 
+	api.GET("/stats/submissions", handlers.GetSubmissionStats)
+	api.GET("/stats/categories", handlers.GetCategoryStats)
+	api.GET("/stats/difficulty", handlers.GetDifficultyStats)
+	api.GET("/stats/score-distribution", handlers.GetScoreDistribution)
+	api.GET("/stats/progression", handlers.GetProgression)
+
 	// 👥 Team routes (only in team mode)
 	team := api.Group("/teams")
 	team.Use(middleware.TeamModeOnly())
@@ -143,6 +150,7 @@ func main() {
 
 	admin.POST("/challenges", handlers.CreateChallenge)
 	admin.GET("/challenges", handlers.GetAllChallenges)
+	admin.GET("/challenges/:id", handlers.GetChallengeByID)
 	admin.PUT("/challenges/:id", handlers.UpdateChallenge)
 	admin.DELETE("/challenges/:id", handlers.DeleteChallenge)
 	admin.DELETE("/submissions", handlers.ResetSubmissions)
@@ -151,6 +159,10 @@ func main() {
 	admin.POST("/config", handlers.SaveConfig)
 	admin.POST("/notifications", handlers.CreateNotification)
 	admin.GET("/notifications", handlers.GetAllNotifications)
+	admin.GET("/submissions", handlers.GetAllSubmissions)
+	admin.GET("/users", handlers.GetUsers)
+	admin.POST("/users", handlers.CreateUser)
+	admin.DELETE("/users/:id", handlers.DeleteUser)
 
 	// 🚀 Start server
 	if err := r.Run(":8080"); err != nil {
