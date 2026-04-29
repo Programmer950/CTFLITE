@@ -7,6 +7,10 @@ const ConfigContext = createContext();
 export function ConfigProvider({ children }) {
     const [config, setConfig] = useState(null);
 
+    const resetConfig = () => {
+        setConfig(siteConfig);
+    };
+
     const safeSetConfig = (data) => {
         if (!data?.pages?.home?.sections) {
             console.warn("Invalid config from backend, using fallback");
@@ -56,7 +60,7 @@ export function ConfigProvider({ children }) {
     if (!config) return null;
 
     return (
-        <ConfigContext.Provider value={{ config, setConfig, fetchConfig }}>
+        <ConfigContext.Provider value={{ config, setConfig, fetchConfig, resetConfig }}>
             {children}
         </ConfigContext.Provider>
     );

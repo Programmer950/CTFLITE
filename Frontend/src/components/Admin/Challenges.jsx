@@ -115,7 +115,11 @@ export default function Challenges() {
 
                             <td>
                                     <span className="badge category">
-                                        {c.category}
+                                        {Array.isArray(c.category)
+                                            ? c.category.map((cat, i) => (
+                                                <span key={i}>{cat}</span>
+                                            ))
+                                            : c.category}
                                     </span>
                             </td>
 
@@ -123,7 +127,11 @@ export default function Challenges() {
 
                             <td>
                                     <span className="badge type">
-                                        {c.difficulty}
+                                        {Array.isArray(c.difficulty)
+                                            ? c.difficulty.map((d, i) => (
+                                                <span key={i}>{d}</span>
+                                            ))
+                                            : c.difficulty}
                                     </span>
                             </td>
 

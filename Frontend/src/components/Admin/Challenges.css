@@ -1,7 +1,9 @@
+/* PAGE */
 .challenges-page {
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
+    padding: 10px 0 40px;
 }
 
 /* HEADER */
@@ -9,22 +11,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 30px;
 }
 
 .page-header h1 {
-    font-size: 83px;
+    font-size: 34px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
 }
 
 /* ADD BUTTON */
 .add-btn {
-    background: none;
-    border: 1px solid #22d3ee;
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.4);
     border-radius: 50%;
-    padding: 6px;
+    padding: 8px;
     cursor: pointer;
     color: #22d3ee;
+    transition: all 0.2s ease;
+}
+
+.add-btn:hover {
+    background: rgba(34, 211, 238, 0.2);
+    transform: scale(1.08);
 }
 
 /* CONTROLS */
@@ -38,55 +48,79 @@
     flex: 1;
     background: #020617;
     border: 1px solid #1f2937;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     color: #e5e7eb;
+    transition: 0.2s;
+}
+
+.controls input:focus {
+    border-color: #22d3ee;
+    outline: none;
 }
 
 .search-btn {
-    background: #22d3ee;
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
     border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     cursor: pointer;
+    color: #020617;
+    transition: 0.2s;
 }
 
-/* TABLE */
+.search-btn:hover {
+    opacity: 0.9;
+}
+
+/* TABLE CARD */
 .table-card {
     padding: 0;
     overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid #1f2937;
+    background: #020617;
 }
 
+/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
 thead {
-    background: #0f172a;
+    background: #020617;
+    border-bottom: 1px solid #1f2937;
 }
 
 th {
     text-align: left;
     padding: 14px;
-    font-size: 22px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
     color: #9ca3af;
 }
 
 td {
-    padding: 14px;
-    font-size: 16px;
+    padding: 16px 14px;
+    font-size: 14px;
     border-top: 1px solid #1f2937;
     color: #e5e7eb;
 }
 
+/* ROW HOVER */
+tr {
+    transition: background 0.2s ease;
+}
+
 tr:hover {
-    background: rgba(255, 255, 255, 0.02);
+    background: rgba(34, 211, 238, 0.03);
 }
 
 /* NAME */
 .challenge-name {
-    font-size: 17px;
+    font-size: 15px;
     font-weight: 500;
 }
 
@@ -98,26 +132,33 @@ tr:hover {
 
 /* BADGES */
 .badge {
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 18px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .badge.category {
-    background: #6366f1;
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
 }
 
 .badge.type {
-    background: #22d3ee;
-    color: #020617;
+    background: rgba(34, 211, 238, 0.2);
+    color: #22d3ee;
 }
 
 .badge.active {
-    background: #10b981;
+    background: rgba(16, 185, 129, 0.2);
+    color: #10b981;
 }
 
 .badge.hidden {
-    background: #ef4444;
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
 }
 
 /* ACTIONS */
@@ -130,16 +171,18 @@ tr:hover {
     background: #020617;
     border: 1px solid #1f2937;
     padding: 6px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .icon-btn svg {
-    color: #e5e7eb;
+    color: #9ca3af;
 }
 
 .icon-btn:hover {
     border-color: #22d3ee;
+    background: rgba(34, 211, 238, 0.05);
 }
 
 .icon-btn:hover svg {
@@ -148,25 +191,22 @@ tr:hover {
 
 .icon-btn.danger:hover {
     border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
 }
 
 .icon-btn.danger:hover svg {
     color: #ef4444;
 }
 
-/* SELECT */
-select {
-    background: #020617;
-    border: 1px solid #1f2937;
-    padding: 10px;
-    border-radius: 8px;
-    color: #e5e7eb;
+/* EMPTY STATE (optional improvement) */
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
 }
 
-/* DYNAMIC SECTION */
-.dynamic-section {
-    margin-top: 10px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
+/* SCROLL FIX (if many challenges) */
+.table-card {
+    max-height: 600px;
+    overflow-y: auto;
 }

@@ -17,7 +17,6 @@ export default function Statistics() {
 
     const [challenges, setChallenges] = useState([]);
 
-    // 🔮 FUTURE DATA (empty for now)
     const [progression, setProgression] = useState([]);
     const [scoreDistribution, setScoreDistribution] = useState([]);
     const [submissionStats, setSubmissionStats] = useState([]);
@@ -29,26 +28,81 @@ export default function Statistics() {
             try {
                 const token = localStorage.getItem("token");
 
-                const [chRes, sbRes] = await Promise.all([
+                const [
+                    chRes,
+                    sbRes,
+                    statsRes,   // ✅ NEW
+                    subRes,
+                    catRes,
+                    diffRes,
+                    progRes,
+                    distRes
+                ] = await Promise.all([
                     fetch("http://localhost:8080/api/challenges", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
                     fetch("http://localhost:8080/api/scoreboard", {
                         headers: { Authorization: `Bearer ${token}` },
                     }),
+                    fetch("http://localhost:8080/api/stats", {   // ✅ NEW
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/stats/submissions", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/stats/categories", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/stats/difficulty", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/stats/progression", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/stats/score-distribution", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
                 ]);
 
                 const chData = await chRes.json();
                 const sbData = await sbRes.json();
+                const subData = await subRes.json();
+                const catData = await catRes.json();
+                const diffData = await diffRes.json();
+                const progData = await progRes.json();
+                const distData = await distRes.json();
+                const statsData = await statsRes.json();
 
+                // 🔥 Basic stats
                 setChallenges(Array.isArray(chData) ? chData : []);
 
                 setStats({
                     challenges: chData.length,
-                    users: sbData.length,
+                    users: statsData.players || statsData.total_players || 0, // ✅ FIXED
                     teams: sbData.filter(x => x.type === "team").length,
                     points: sbData.reduce((sum, x) => sum + (x.score || 0), 0),
                 });
+
+                // 🔥 Submission stats → convert to pie format
+                setSubmissionStats([
+                    { name: "Correct", value: subData.correct || 0 },
+                    { name: "Incorrect", value: subData.incorrect || 0 },
+                ]);
+
+                // 🔥 Direct mappings
+                setCategoryStats(Array.isArray(catData) ? catData : []);
+                setDifficultyStats(Array.isArray(diffData) ? diffData : []);
+                setScoreDistribution(Array.isArray(distData) ? distData : []);
+
+                // 🔥 Progression fix (backend sends {name, value})
+                setProgression(
+                    Array.isArray(progData)
+                        ? progData.map(p => ({
+                            name: p.name,
+                            score: p.value,
+                        }))
+                        : []
+                );
 
             } catch (err) {
                 console.error("Stats fetch failed", err);
@@ -171,7 +225,7 @@ export default function Statistics() {
                     <ResponsiveContainer width="100%" height={220}>
                         <PieChart>
                             <Pie data={submissionStats} dataKey="value" innerRadius={60} outerRadius={80}>
-                                {(submissionStats || []).map((_, i) => (
+                                {submissionStats.map((_, i) => (
                                     <Cell key={i} />
                                 ))}
                             </Pie>
@@ -187,7 +241,7 @@ export default function Statistics() {
                     <ResponsiveContainer width="100%" height={220}>
                         <PieChart>
                             <Pie data={categoryStats} dataKey="value" innerRadius={60} outerRadius={80}>
-                                {(categoryStats || []).map((_, i) => (
+                                {categoryStats.map((_, i) => (
                                     <Cell key={i} />
                                 ))}
                             </Pie>
@@ -203,7 +257,7 @@ export default function Statistics() {
                     <ResponsiveContainer width="100%" height={220}>
                         <PieChart>
                             <Pie data={difficultyStats} dataKey="value" innerRadius={60} outerRadius={80}>
-                                {(difficultyStats || []).map((_, i) => (
+                                {difficultyStats.map((_, i) => (
                                     <Cell key={i} />
                                 ))}
                             </Pie>

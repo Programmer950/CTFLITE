@@ -1,7 +1,7 @@
 import { useConfig } from "../context/ConfigContext";
 
 export default function Sidebar({ setPanelType, setCurrentPage, currentPage }) {
-    const { config, setConfig, fetchConfig } = useConfig();
+    const { config, setConfig, fetchConfig, resetConfig } = useConfig();
 
     const defaultProps = {
         hero: {
@@ -174,7 +174,7 @@ export default function Sidebar({ setPanelType, setCurrentPage, currentPage }) {
                     }}
                 />
 
-                <button onClick={() => window.location.reload()}>
+                <button onClick={resetConfig}>
                     Reset UI
                 </button>
 

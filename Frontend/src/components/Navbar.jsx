@@ -24,7 +24,7 @@ export default function Navbar({ isBuilder = false, onSelect }) {
     const { unreadCount } = useNotification();
     const [openNotif, setOpenNotif] = useState(false);
 
-    const { token, logout } = useAuth();
+    const { token, user, logout } = useAuth();
     const { config } = useConfig();
 
     const navbarConfig = config?.layout?.navbar;
@@ -106,6 +106,12 @@ export default function Navbar({ isBuilder = false, onSelect }) {
                         <Settings size={16} /> Rules
                     </Link>
                 )}
+
+                {user?.is_admin && (
+                    <Link to="/admin" className="admin-btn">
+                        ⚙ Admin Panel
+                    </Link>
+                )}
             </div>
 
             {/* RIGHT */}
@@ -159,7 +165,9 @@ export default function Navbar({ isBuilder = false, onSelect }) {
                             <div className="profile-avatar">
                                 <User size={14} />
                             </div>
-                            <span className="profile-name">Admin</span>
+                            <span className="profile-name">
+                                {user?.username || "User"}
+                            </span>
                         </div>
 
                         {!isBuilder && open && (
@@ -170,8 +178,12 @@ export default function Navbar({ isBuilder = false, onSelect }) {
                                     </div>
 
                                     <div>
-                                        <div className="profile-name">Admin</div>
-                                        <div className="profile-email">Admin@ctflite.com</div>
+                                        <div className="profile-name">
+                                            {user?.username || "User"}
+                                        </div>
+                                        <div className="profile-email">
+                                            {user?.email || "No email"}
+                                        </div>
                                     </div>
                                 </div>
 

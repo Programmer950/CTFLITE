@@ -1,38 +1,64 @@
 import "./Submissions.css";
 import { Search, Flag, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Submissions() {
 
     const [filter, setFilter] = useState("all");
+    const [search, setSearch] = useState("");
 
-    const submissions = [
-        {
-            id: 1,
-            user: "admin",
-            challenge: "SQL Injection 101",
-            type: "Static",
-            provided: "flag{correct}",
-            date: "2026-04-07",
-            correct: true,
-        },
-        {
-            id: 2,
-            user: "player1",
-            challenge: "Buffer Overflow",
-            type: "Dynamic",
-            provided: "wrong_flag",
-            date: "2026-04-07",
-            correct: false,
-        },
-    ];
+    const [submissions, setSubmissions] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // FILTER LOGIC
+    // 🔥 FETCH FROM BACKEND
+    useEffect(() => {
+        async function fetchSubmissions() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const res = await fetch("http://localhost:8080/admin/submissions", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to fetch submissions");
+                }
+
+                setSubmissions(Array.isArray(data) ? data : []);
+
+            } catch (err) {
+                console.error("Submissions fetch error:", err);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchSubmissions();
+    }, []);
+
+    // 🔥 FILTER + SEARCH
     const filteredSubmissions = submissions.filter((s) => {
-        if (filter === "correct") return s.correct;
-        if (filter === "incorrect") return !s.correct;
-        return true;
+
+        const matchesFilter =
+            filter === "correct" ? s.correct :
+                filter === "incorrect" ? !s.correct :
+                    true;
+
+        const matchesSearch =
+            s.user.toLowerCase().includes(search.toLowerCase()) ||
+            s.challenge.toLowerCase().includes(search.toLowerCase());
+
+        return matchesFilter && matchesSearch;
     });
+
+    // 🔥 LOADING STATE
+    if (loading) {
+        return <div className="submissions-page">Loading submissions...</div>;
+    }
 
     return (
         <div className="submissions-page">
@@ -55,7 +81,11 @@ export default function Submissions() {
                     <option value="incorrect">Incorrect</option>
                 </select>
 
-                <input placeholder="Search submissions..." />
+                <input
+                    placeholder="Search submissions..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
 
                 <button className="search-btn">
                     <Search size={16} />
@@ -80,45 +110,52 @@ export default function Submissions() {
                     </thead>
 
                     <tbody>
-                    {filteredSubmissions.map((s) => (
-                        <tr key={s.id}>
-                            <td>{s.id}</td>
-
-                            <td className="username">{s.user}</td>
-
-                            <td>{s.challenge}</td>
-
-                            <td>
-                                <span className="badge type">{s.type}</span>
+                    {filteredSubmissions.length === 0 ? (
+                        <tr>
+                            <td colSpan="8" className="empty">
+                                No submissions found
                             </td>
-
-                            <td className="provided">{s.provided}</td>
-
-                            <td>
-                                {s.correct ? (
-                                    <span className="badge correct">Correct</span>
-                                ) : (
-                                    <span className="badge incorrect">Incorrect</span>
-                                )}
-                            </td>
-
-                            <td>{s.date}</td>
-
-                            <td className="actions">
-                                <button className="icon-btn">
-                                    <Flag size={16} />
-                                </button>
-                                <button className="icon-btn danger">
-                                    <Trash2 size={16} />
-                                </button>
-                            </td>
-
                         </tr>
-                    ))}
+                    ) : (
+                        filteredSubmissions.map((s) => (
+                            <tr key={s.id}>
+                                <td>{s.id}</td>
+
+                                <td className="username">{s.user}</td>
+
+                                <td>{s.challenge}</td>
+
+                                <td>
+                                    <span className="badge type">{s.type}</span>
+                                </td>
+
+                                <td className="provided">{s.provided}</td>
+
+                                <td>
+                                    {s.correct ? (
+                                        <span className="badge correct">Correct</span>
+                                    ) : (
+                                        <span className="badge incorrect">Incorrect</span>
+                                    )}
+                                </td>
+
+                                <td>{s.date}</td>
+
+                                <td className="actions">
+                                    <button className="icon-btn">
+                                        <Flag size={16} />
+                                    </button>
+
+                                    <button className="icon-btn danger">
+                                        <Trash2 size={16} />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    )}
                     </tbody>
                 </table>
             </div>
-
         </div>
     );
 }

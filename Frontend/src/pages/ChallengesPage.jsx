@@ -3,51 +3,84 @@ import ChallengeModal from "../components/Challenges/ChallengeModal";
 import { Flag, Layers, CheckCircle, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 
-
 export default function ChallengesPage() {
 
     const [selectedChallenge, setSelectedChallenge] = useState(null);
     const [challenges, setChallenges] = useState([]);
+    const [filtered, setFiltered] = useState([]);
+    const [categories, setCategories] = useState([]);
+
+    const [search, setSearch] = useState("");
+    const [activeCategory, setActiveCategory] = useState("all");
+
     const [loading, setLoading] = useState(true);
 
+    // 🔥 FETCH DATA
     useEffect(() => {
-        async function fetchChallenges() {
+        async function fetchData() {
             try {
                 const token = localStorage.getItem("token");
-                console.log(token);
 
-                const res = await fetch("http://localhost:8080/api/challenges", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const [chRes, catRes] = await Promise.all([
+                    fetch("http://localhost:8080/api/challenges", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                    fetch("http://localhost:8080/api/categories", {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }),
+                ]);
 
-                const data = await res.json();
+                const chData = await chRes.json();
+                const catData = await catRes.json();
 
-                console.log("API RESPONSE:", data); // 👈 debug
+                const safeChallenges = Array.isArray(chData) ? chData : [];
+                const safeCategories = Array.isArray(catData) ? catData : [];
 
-                // ✅ ensure it's an array
-                if (Array.isArray(data)) {
-                    setChallenges(data);
-                } else {
-                    console.error("Unexpected response:", data);
-                    setChallenges([]); // fallback
-                }
+                setChallenges(safeChallenges);
+                setFiltered(safeChallenges);
+                setCategories(safeCategories);
 
             } catch (err) {
                 console.error("Failed to fetch challenges", err);
                 setChallenges([]);
+                setFiltered([]);
             } finally {
                 setLoading(false);
             }
         }
 
-        fetchChallenges();
+        fetchData();
     }, []);
+
+    // 🔥 FILTER + SEARCH
+    useEffect(() => {
+        let result = [...challenges];
+
+        // category filter
+        if (activeCategory !== "all") {
+            result = result.filter(
+                (c) => c.category?.toLowerCase() === activeCategory
+            );
+        }
+
+        // search
+        if (search.trim()) {
+            result = result.filter(
+                (c) =>
+                    c.title.toLowerCase().includes(search.toLowerCase()) ||
+                    c.description.toLowerCase().includes(search.toLowerCase())
+            );
+        }
+
+        setFiltered(result);
+    }, [search, activeCategory, challenges]);
 
     if (loading) {
         return <div className="page-wrapper">Loading challenges...</div>;
     }
+
+    // 🔥 solved count (real)
+    const solvedCount = challenges.filter(c => c.solved).length;
 
     return (
         <div className="page-wrapper">
@@ -75,7 +108,7 @@ export default function ChallengesPage() {
 
                     <div className="ch-stat">
                         <span className="stat-num">
-                            <CheckCircle size={16} /> 12
+                            <CheckCircle size={16} /> {solvedCount}
                         </span>
                         <span className="stat-label">Solved</span>
                     </div>
@@ -84,35 +117,61 @@ export default function ChallengesPage() {
 
             {/* FILTER */}
             <div className="ch-filter-bar">
+
                 <div className="filters-left">
-                    <button className="filter active">All</button>
-                    <button className="filter">Web</button>
-                    <button className="filter">Crypto</button>
-                    <button className="filter">Pwn</button>
+                    <button
+                        className={`filter ${activeCategory === "all" ? "active" : ""}`}
+                        onClick={() => setActiveCategory("all")}
+                    >
+                        All
+                    </button>
+
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            className={`filter ${activeCategory === cat ? "active" : ""}`}
+                            onClick={() => setActiveCategory(cat)}
+                        >
+                            {cat}
+                        </button>
+                    ))}
                 </div>
 
                 <div className="filters-right">
                     <div className="search-box">
                         <Search size={14} />
-                        <input placeholder="Search challenges..." />
+                        <input
+                            placeholder="Search challenges..."
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                        />
                     </div>
                 </div>
+
             </div>
 
             {/* GRID */}
             <div className="ch-section">
                 <div className="ch-grid">
-                    {challenges.map((ch) => (
-                        <ChallengeCard
-                            key={ch.id}
-                            name={ch.title}
-                            desc={ch.description}
-                            points={ch.points}
-                            difficulty={ch.difficulty}
-                            solves={ch.solve_count}
-                            onClick={() => setSelectedChallenge(ch)}
-                        />
-                    ))}
+
+                    {filtered.length === 0 ? (
+                        <p>No challenges found</p>
+                    ) : (
+                        filtered.map((ch) => (
+
+                            <ChallengeCard
+                                key={`${ch.ID}-${ch.Title}`}
+                                name={ch.Title}
+                                desc={ch.Description}
+                                points={ch.Points}
+                                difficulty={ch.Difficulty}
+                                solves={ch.SolveCount}
+                                solved={ch.Solved}
+                                onClick={() => setSelectedChallenge(ch)}
+                            />
+                        ))
+                    )}
+
                 </div>
             </div>
 

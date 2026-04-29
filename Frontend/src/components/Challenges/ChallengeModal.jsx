@@ -1,8 +1,18 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import {
+    X,
+    Download,
+    Tag,
+    User,
+    BarChart,
+    Layers,
+    AlertCircle,
+    CheckCircle
+} from "lucide-react";
 
-export default function ChallengeModal({ challenge, onClose }) {
+export default function ChallengeModal({ challenge, onClose, onSolved }) {
     const { token } = useAuth();
     const navigate = useNavigate();
 
@@ -18,15 +28,13 @@ export default function ChallengeModal({ challenge, onClose }) {
     if (!challenge) return null;
 
     async function handleSubmit() {
-
-        // 🔐 not logged in → redirect
         if (!token) {
             navigate("/login");
             return;
         }
 
         if (!flag) {
-            setStatus("Enter a flag");
+            setStatus("empty");
             return;
         }
 
@@ -41,34 +49,24 @@ export default function ChallengeModal({ challenge, onClose }) {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    challenge_id: challenge.id,
+                    challenge_id: challenge.ID,
                     flag: flag,
                 }),
             });
 
             const data = await res.json();
 
-            // ✅ SUCCESS
             if (data.result === "correct") {
-                setStatus("correct");
+                setStatus("success");
+                onSolved?.(challenge.ID);
 
-                setTimeout(() => {
-                    onClose();
-                }, 1000);
+                setTimeout(() => onClose(), 1200);
+            } else {
+                setStatus("error");
             }
 
-            // ❌ WRONG
-            else if (data.result) {
-                setStatus("wrong");
-            }
-
-            // ⚠️ RATE LIMIT / ERROR
-            else if (data.error) {
-                setStatus(data.error);
-            }
-
-        } catch (err) {
-            setStatus("Network error");
+        } catch {
+            setStatus("error");
         } finally {
             setLoading(false);
         }
@@ -76,47 +74,135 @@ export default function ChallengeModal({ challenge, onClose }) {
 
     return (
         <div className="modal-overlay">
-
             <div className="modal">
 
                 {/* HEADER */}
                 <div className="modal-header">
-                    <h2>{challenge.title}</h2>
-                    <button className="modal-close-btn" onClick={onClose}>✕</button>
+                    <h2>{challenge.Title}</h2>
+
+                    <button className="modal-close-btn" onClick={onClose}>
+                        <X size={16} />
+                    </button>
                 </div>
+
+                {/* STATUS */}
+                {status && (
+                    <div className={`status-banner ${status}`}>
+                        {status === "success" && (
+                            <>
+                                <CheckCircle size={16} /> Challenge Solved
+                            </>
+                        )}
+                        {status === "error" && (
+                            <>
+                                <AlertCircle size={16} /> Incorrect Flag
+                            </>
+                        )}
+                        {status === "empty" && "Enter a flag"}
+                    </div>
+                )}
 
                 {/* BODY */}
                 <div className="modal-body">
-                    <p>{challenge.description}</p>
 
-                    <input
-                        placeholder="flag{...}"
-                        value={flag}
-                        onChange={(e) => setFlag(e.target.value)}
-                    />
+                    {/* DESCRIPTION */}
+                    <p className="challenge-desc">
+                        {challenge.Description || "No description"}
+                    </p>
 
-                    <button className="modal-submit-btn" onClick={handleSubmit} disabled={loading}>
-                        {loading ? "Submitting..." : "Submit Flag"}
-                    </button>
+                    {/* META INFO */}
+                    <div className="meta-grid">
 
-                    {/* STATUS */}
-                    {status === "correct" && (
-                        <p className="success">✅ Correct!</p>
-                    )}
+                        <div className="meta-item">
+                            <Layers size={14} />
+                            {challenge.Category || "unknown"}
+                        </div>
 
-                    {status === "wrong" && (
-                        <p className="error">❌ Wrong flag</p>
-                    )}
+                        <div className="meta-item">
+                            <BarChart size={14} />
+                            {challenge.Difficulty}
+                        </div>
 
-                    {status &&
-                        status !== "correct" &&
-                        status !== "wrong" && (
-                            <p className="error">{status}</p>
+                        {challenge.Author && (
+                            <div className="meta-item">
+                                <User size={14} />
+                                {challenge.Author}
+                            </div>
                         )}
+
+                        {challenge.MaxAttempts > 0 && (
+                            <div className="meta-item">
+                                Attempts: {challenge.MaxAttempts}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* TAGS */}
+                    {challenge.Tags?.length > 0 && (
+                        <div className="tags">
+                            {challenge.Tags.map((t, i) => (
+                                <span key={i} className="tag">
+                                    <Tag size={10} /> {t}
+                                </span>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* FILE DOWNLOAD */}
+                    {challenge.FileURL && (
+                        <a
+                            href={`http://localhost:8080/${challenge.FileURL}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="file-btn"
+                        >
+                            <Download size={14} />
+                            Download Attachment
+                        </a>
+                    )}
+
+                    {/* HINTS */}
+                    {challenge.Hints?.length > 0 && (
+                        <div className="hints">
+                            <h4>Hints</h4>
+                            {challenge.Hints.map((h, i) => (
+                                <div key={i} className="hint-box">
+                                    {h}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* FLAG INPUT */}
+                    {!challenge.Solved && (
+                        <div className="flag-section">
+
+                            <input
+                                placeholder="flag{...}"
+                                value={flag}
+                                onChange={(e) => setFlag(e.target.value)}
+                            />
+
+                            <button
+                                className="modal-submit-btn"
+                                onClick={handleSubmit}
+                                disabled={loading}
+                            >
+                                {loading ? "Submitting..." : "Submit"}
+                            </button>
+
+                        </div>
+                    )}
+
+                    {/* SOLVED STATE */}
+                    {challenge.Solved && (
+                        <div className="already-solved">
+                            ✔ Already solved
+                        </div>
+                    )}
+
                 </div>
-
             </div>
-
         </div>
     );
 }

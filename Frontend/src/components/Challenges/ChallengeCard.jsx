@@ -1,21 +1,42 @@
-import { Zap, Users } from "lucide-react";
+import { Zap, Users, CheckCircle } from "lucide-react";
 
-export default function ChallengeCard({ name, desc, points, difficulty, solves, onClick }) {
+export default function ChallengeCard({
+                                          name,
+                                          desc,
+                                          points,
+                                          difficulty,
+                                          solves,
+                                          solved,
+                                          onClick
+                                      }) {
     return (
-        <div className="challenge-card" onClick={onClick}>
+        <div
+            className={`challenge-card ${solved ? "solved" : ""}`}
+            onClick={onClick}
+        >
 
+            {/* SOLVED OVERLAY */}
+            {solved && <div className="solved-overlay">Solved</div>}
+
+            {/* HEADER */}
             <div className="ch-card-header">
-                <div className="ch-card-title">{name}</div>
+                <div className="ch-card-title">
+                    {name}
+                    {solved && <CheckCircle size={14} className="solved-icon" />}
+                </div>
 
                 <span className={`diff-badge diff-${difficulty}`}>
                     {difficulty}
                 </span>
             </div>
 
-            <div className="ch-card-desc">{desc}</div>
+            {/* DESC */}
+            <div className="ch-card-desc">
+                {desc || "No description"}
+            </div>
 
+            {/* FOOTER */}
             <div className="ch-card-footer">
-
                 <span className="ch-points">
                     <Zap size={14} />
                     {points} pts
@@ -25,7 +46,6 @@ export default function ChallengeCard({ name, desc, points, difficulty, solves, 
                     <Users size={14} />
                     {solves} solves
                 </span>
-
             </div>
 
         </div>

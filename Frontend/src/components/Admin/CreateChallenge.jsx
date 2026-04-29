@@ -1,70 +1,142 @@
 import "./CreateChallenge.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 
 export default function CreateChallenge() {
     const { token } = useAuth();
 
+    const [popup, setPopup] = useState(null);
     const [type, setType] = useState("standard");
+    const [file, setFile] = useState(null);
 
     const [form, setForm] = useState({
         title: "",
         category: "",
-        description: "",
-        points: "",
         difficulty: "easy",
+        description: "",
+
+        points: "",
+
+        initialValue: "",
+        decay: "",
+        minValue: "",
+
         flag: "",
+        flagType: "static",
+        caseSensitive: false,
+
+        state: "visible",
+        maxAttempts: 0,
+
+        tags: "",
+        author: "",
+        hints: "",
     });
 
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState("");
+
+    useEffect(() => {
+        if (!popup) return;
+        const timer = setTimeout(() => setPopup(null), 3000);
+        return () => clearTimeout(timer);
+    }, [popup]);
+
+    const updateField = (key, value) => {
+        setForm(prev => ({ ...prev, [key]: value }));
+    };
 
     async function handleSubmit() {
         if (!form.title || !form.description || !form.flag) {
-            setMessage("Please fill required fields");
+            setPopup({ type: "error", text: "Fill required fields" });
             return;
         }
 
         setLoading(true);
-        setMessage("");
 
         try {
+            const formData = new FormData();
+
+            // 🔥 BASIC
+            formData.append("title", form.title);
+            formData.append("description", form.description);
+            formData.append("category", form.category);
+            formData.append("difficulty", form.difficulty);
+            formData.append("type", type);
+
+            // 🔥 SCORING
+            if (type === "standard") {
+                formData.append("points", form.points);
+            }
+
+            if (type === "dynamic") {
+                formData.append("initialValue", form.initialValue);
+                formData.append("decay", form.decay);
+                formData.append("minValue", form.minValue);
+            }
+
+            // 🔥 FLAG
+            formData.append("flag", form.flag);
+            formData.append("flagType", form.flagType);
+            formData.append("caseSensitive", form.caseSensitive);
+
+            // 🔥 CONFIG
+            formData.append("state", form.state);
+            formData.append("maxAttempts", form.maxAttempts);
+
+            // 🔥 METADATA (MATCHES BACKEND EXACTLY)
+            formData.append("author", form.author);
+            formData.append("tags", form.tags);   // backend expects string
+            formData.append("hints", form.hints); // backend expects string
+
+            // 🔥 FILE
+            if (file) {
+                formData.append("file", file);
+            }
+
             const res = await fetch("http://localhost:8080/admin/challenges", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    title: form.title,
-                    description: form.description,
-                    category: form.category,
-                    difficulty: form.difficulty,
-                    points: Number(form.points),
-                    flag: form.flag,
-                }),
+                body: formData,
             });
 
-            const data = await res.json();
+            let data;
+            try {
+                data = await res.json();
+            } catch {
+                data = {};
+            }
 
             if (!res.ok) {
                 throw new Error(data.error || "Failed to create challenge");
             }
 
-            setMessage("✅ Challenge created!");
+            setPopup({ type: "success", text: "Challenge created!" });
 
-            // reset
             setForm({
                 title: "",
                 category: "",
+                difficulty: "easy",
                 description: "",
                 points: "",
-                difficulty: "easy",
+                initialValue: "",
+                decay: "",
+                minValue: "",
                 flag: "",
+                flagType: "static",
+                caseSensitive: false,
+                state: "visible",
+                maxAttempts: 0,
+                tags: "",
+                author: "",
+                hints: "",
             });
 
+            setFile(null);
+
         } catch (err) {
-            setMessage(err.message);
+            setPopup({ type: "error", text: err.message });
         } finally {
             setLoading(false);
         }
@@ -73,121 +145,211 @@ export default function CreateChallenge() {
     return (
         <div className="create-challenge-page">
 
-            {/* HEADER */}
             <div className="page-header center">
                 <h1>Create Challenge</h1>
             </div>
 
             <div className="form-container">
 
-                {/* LEFT */}
+                {/* LEFT PANEL */}
                 <div className="type-panel">
-                    <h3>Challenge Types</h3>
+                    <h3>Challenge Type</h3>
 
                     <div
-                        className={type === "standard" ? "type-box active" : "type-box"}
+                        className={`type-box ${type === "standard" ? "active" : ""}`}
                         onClick={() => setType("standard")}
                     >
                         Standard
                     </div>
 
                     <div
-                        className={type === "dynamic" ? "type-box active" : "type-box"}
+                        className={`type-box ${type === "dynamic" ? "active" : ""}`}
                         onClick={() => setType("dynamic")}
                     >
                         Dynamic
                     </div>
                 </div>
 
-                {/* RIGHT */}
+                {/* RIGHT PANEL */}
                 <div className="form-panel">
 
-                    <div className="form-group">
-                        <label>Name</label>
-                        <input
-                            value={form.title}
-                            onChange={(e) => setForm({ ...form, title: e.target.value })}
-                        />
-                    </div>
+                    {/* BASIC */}
+                    <div className="form-section">
+                        <h3>Basic Info</h3>
 
-                    <div className="form-group">
-                        <label>Category</label>
-                        <input
-                            value={form.category}
-                            onChange={(e) => setForm({ ...form, category: e.target.value })}
-                        />
-                    </div>
-
-                    <div className="form-group">
-                        <label>Description</label>
-                        <textarea
-                            value={form.description}
-                            onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        />
-                    </div>
-
-                    {/* STANDARD */}
-                    {type === "standard" && (
-                        <div className="form-group">
-                            <label>Points</label>
-                            <input
-                                type="number"
-                                value={form.points}
-                                onChange={(e) => setForm({ ...form, points: e.target.value })}
-                            />
-                        </div>
-                    )}
-
-                    {/* DYNAMIC (UI only for now) */}
-                    {type === "dynamic" && (
-                        <>
+                        <div className="section-grid">
                             <div className="form-group">
-                                <label>Initial Value</label>
-                                <input placeholder="Coming soon" disabled />
+                                <label>Name *</label>
+                                <input
+                                    placeholder="name"
+                                    value={form.title}
+                                    onChange={(e) => updateField("title", e.target.value)}
+                                />
                             </div>
 
                             <div className="form-group">
-                                <label>Decay Function</label>
-                                <select disabled>
-                                    <option>Linear</option>
-                                    <option>Logarithmic</option>
+                                <label>Category *</label>
+                                <select
+                                    value={form.category}
+                                    onChange={(e) => updateField("category", e.target.value)}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="web">Web</option>
+                                    <option value="crypto">Crypto</option>
+                                    <option value="pwn">Pwn</option>
+                                    <option value="rev">Reverse</option>
+                                    <option value="misc">Misc</option>
                                 </select>
                             </div>
 
                             <div className="form-group">
-                                <label>Decay Value</label>
-                                <input placeholder="Coming soon" disabled />
+                                <label>Difficulty</label>
+                                <select
+                                    value={form.difficulty}
+                                    onChange={(e) => updateField("difficulty", e.target.value)}
+                                >
+                                    <option value="easy">Easy</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="hard">Hard</option>
+                                </select>
+                            </div>
+
+                            <div className="form-group full">
+                                <label>Description *</label>
+                                <textarea
+                                    placeholder="Description"
+                                    value={form.description}
+                                    onChange={(e) => updateField("description", e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CONFIG */}
+                    <div className="form-section">
+                        <h3>Configuration</h3>
+
+                        <div className="section-grid">
+                            {type === "standard" && (
+                                <div className="form-group">
+                                    <label>Points</label>
+                                    <input
+                                        placeholder="points"
+                                        type="number"
+                                        value={form.points}
+                                        onChange={(e) => updateField("points", e.target.value)}
+                                    />
+                                </div>
+                            )}
+
+                            <div className="form-group">
+                                <label>Visibility</label>
+                                <select
+                                    value={form.state}
+                                    onChange={(e) => updateField("state", e.target.value)}
+                                >
+                                    <option value="visible">Visible</option>
+                                    <option value="hidden">Hidden</option>
+                                </select>
                             </div>
 
                             <div className="form-group">
-                                <label>Minimum Value</label>
-                                <input placeholder="Coming soon" disabled />
+                                <label>Max Attempts</label>
+                                <input
+                                    placeholder="0 = infinite attempts"
+                                    type="number"
+                                    value={form.maxAttempts}
+                                    onChange={(e) => updateField("maxAttempts", e.target.value)}
+                                />
                             </div>
-                        </>
+                        </div>
+                    </div>
+
+                    {/* DYNAMIC */}
+                    {type === "dynamic" && (
+                        <div className="form-section">
+                            <h3>Dynamic Scoring</h3>
+
+                            <div className="section-grid">
+                                <input type="number" placeholder="Initial Value"
+                                       value={form.initialValue}
+                                       onChange={(e) => updateField("initialValue", e.target.value)} />
+
+                                <input type="number" placeholder="Decay"
+                                       value={form.decay}
+                                       onChange={(e) => updateField("decay", e.target.value)} />
+
+                                <input type="number" placeholder="Min Value"
+                                       value={form.minValue}
+                                       onChange={(e) => updateField("minValue", e.target.value)} />
+                            </div>
+                        </div>
                     )}
 
                     {/* FLAG */}
-                    <div className="form-group">
-                        <label>Flag</label>
+                    <div className="form-section">
+                        <h3>Flag</h3>
                         <input
+                            placeholder="CTF{...}"
                             value={form.flag}
-                            onChange={(e) => setForm({ ...form, flag: e.target.value })}
+                            onChange={(e) => updateField("flag", e.target.value)}
                         />
                     </div>
 
-                    {/* BUTTON */}
+                    <div className="form-section">
+                        <h3>Metadata</h3>
+
+                        <div className="metadata-grid">
+
+                            <input
+                                placeholder="Author"
+                                value={form.author}
+                                onChange={(e) => updateField("author", e.target.value)}
+                            />
+
+                            <input
+                                placeholder="Tags (comma separated)"
+                                value={form.tags}
+                                onChange={(e) => updateField("tags", e.target.value)}
+                            />
+
+                            <textarea
+                                className="full-width"
+                                placeholder="Hints (one per line)"
+                                value={form.hints}
+                                onChange={(e) => updateField("hints", e.target.value)}
+                            />
+
+                        </div>
+                    </div>
+
+                    {/* FILE UPLOAD */}
+                    <div className="form-section">
+                        <h3>Attachment</h3>
+
+                        <input
+                            type="file"
+                            onChange={(e) => setFile(e.target.files[0])}
+                        />
+
+                        {file && <p>Selected: {file.name}</p>}
+                    </div>
+
+                    {/* ACTION */}
                     <div className="form-actions">
                         <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
-                            {loading ? "Creating..." : "Create"}
+                            {loading ? "Creating..." : "Create Challenge"}
                         </button>
                     </div>
 
-                    {message && <p className="form-message">{message}</p>}
-
                 </div>
-
             </div>
 
+            {popup && (
+                <div className={`popup ${popup.type}`}>
+                    {popup.text}
+                </div>
+            )}
         </div>
     );
 }
