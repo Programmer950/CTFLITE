@@ -15,7 +15,7 @@ export default function ChallengesPage() {
 
     const [loading, setLoading] = useState(true);
 
-    // 🔥 FETCH DATA
+    // 🚀 FETCH DATA (FIXED)
     useEffect(() => {
         async function fetchData() {
             try {
@@ -45,31 +45,38 @@ export default function ChallengesPage() {
                 setChallenges([]);
                 setFiltered([]);
             } finally {
-                setLoading(false);
+                setLoading(false); // 🔥 critical fix
             }
         }
 
         fetchData();
     }, []);
 
-    // 🔥 FILTER + SEARCH
+    // 🚀 FILTER + SEARCH (FIXED + SAFE)
     useEffect(() => {
         let result = [...challenges];
 
         // category filter
         if (activeCategory !== "all") {
             result = result.filter(
-                (c) => c.category?.toLowerCase() === activeCategory
+                (c) =>
+                    (c.Category || "")
+                        .toLowerCase()
+                        .includes(activeCategory.toLowerCase())
             );
         }
 
         // search
         if (search.trim()) {
-            result = result.filter(
-                (c) =>
-                    c.title.toLowerCase().includes(search.toLowerCase()) ||
-                    c.description.toLowerCase().includes(search.toLowerCase())
-            );
+            result = result.filter((c) => {
+                const title = c.Title || "";
+                const desc = c.Description || "";
+
+                return (
+                    title.toLowerCase().includes(search.toLowerCase()) ||
+                    desc.toLowerCase().includes(search.toLowerCase())
+                );
+            });
         }
 
         setFiltered(result);
@@ -79,8 +86,8 @@ export default function ChallengesPage() {
         return <div className="page-wrapper">Loading challenges...</div>;
     }
 
-    // 🔥 solved count (real)
-    const solvedCount = challenges.filter(c => c.solved).length;
+    // 🔥 solved count (correct field)
+    const solvedCount = challenges.filter(c => c.Solved).length;
 
     return (
         <div className="page-wrapper">
@@ -158,7 +165,6 @@ export default function ChallengesPage() {
                         <p>No challenges found</p>
                     ) : (
                         filtered.map((ch) => (
-
                             <ChallengeCard
                                 key={`${ch.ID}-${ch.Title}`}
                                 name={ch.Title}
@@ -179,6 +185,21 @@ export default function ChallengesPage() {
             <ChallengeModal
                 challenge={selectedChallenge}
                 onClose={() => setSelectedChallenge(null)}
+
+                // 🔥 LIVE UPDATE AFTER SOLVE
+                onSolved={(id) => {
+                    setChallenges(prev =>
+                        prev.map(ch =>
+                            ch.ID === id
+                                ? {
+                                    ...ch,
+                                    Solved: true,
+                                    SolveCount: (ch.SolveCount || 0) + 1
+                                }
+                                : ch
+                        )
+                    );
+                }}
             />
 
         </div>

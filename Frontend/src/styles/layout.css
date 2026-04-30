@@ -46,8 +46,8 @@
 .builder-root {
     display: grid;
     grid-template-columns: 260px 1fr 320px;
-    height: 100vh;        /* full screen */
-    overflow: hidden;     /* 🔥 prevent page scroll */
+    height: 100vh;
+    overflow: hidden;
 }
 
 /* ================= SCROLL FIX ================= */
@@ -71,10 +71,9 @@
     flex-direction: column;
     gap: var(--space-md);
 
-    box-shadow: 2px 0 20px rgba(0,0,0,0.3);
-    overflow-y: auto;
-    height: 100%;
+    box-shadow: 2px 0 24px rgba(0,0,0,0.35);
 }
+
 /* ================= PANEL ================= */
 
 .builder-root .panel {
@@ -87,12 +86,10 @@
     flex-direction: column;
     gap: var(--space-md);
 
-    box-shadow: -2px 0 20px rgba(0,0,0,0.3);
-    overflow-y: auto;
-    height: 100%;
+    box-shadow: -2px 0 24px rgba(0,0,0,0.35);
 }
 
-/* ================= BUTTONS ================= */
+/* ================= BUILDER BUTTONS ================= */
 
 .builder-root .sidebar button {
     width: 100%;
@@ -106,6 +103,10 @@
     text-align: left;
     cursor: pointer;
 
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
     transition: all 0.2s ease;
 }
 
@@ -113,10 +114,11 @@
     background: var(--hover-fixed);
     border-color: var(--accent-fixed);
     transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
 }
 
 .builder-root .sidebar button:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
 }
 
 /* ================= BUILDER INTERACTIONS ================= */
@@ -138,6 +140,7 @@
 
 .builder-root .section-wrapper:hover {
     outline: 1px dashed var(--accent-fixed);
+    background: rgba(255,255,255,0.01);
 }
 
 /* ================= OVERLAY ================= */
@@ -151,7 +154,7 @@
 
 /* ================= DRAG HANDLE ================= */
 
-.drag-handle {
+.builder-root .drag-handle {
     position: absolute;
     top: 8px;
     right: 8px;
@@ -166,22 +169,29 @@
     font-size: 13px;
 
     border: 1px solid var(--border-fixed);
+
+    transition: 0.2s ease;
 }
 
-.drag-handle:active {
+.builder-root .drag-handle:hover {
+    border-color: var(--accent-fixed);
+    box-shadow: 0 0 6px rgba(0,212,255,0.3);
+}
+
+.builder-root .drag-handle:active {
     cursor: grabbing;
 }
 
 /* ================= SELECTED BORDER ================= */
 
-.section-selected-border {
+.builder-root .section-selected-border {
     position: absolute;
     inset: 0;
     border: 2px solid var(--accent-fixed);
     pointer-events: none;
     z-index: 6;
 
-    box-shadow: 0 0 10px var(--accent-fixed);
+    box-shadow: 0 0 12px var(--accent-fixed);
 }
 
 /* ================= FORM ================= */
@@ -221,7 +231,7 @@
 
 /* ================= DELETE BUTTON ================= */
 
-.delete-btn {
+.builder-root .delete-btn {
     position: absolute;
     top: 8px;
     left: 8px;
@@ -238,26 +248,28 @@
     transition: 0.2s;
 }
 
-.delete-btn:hover {
+.builder-root .delete-btn:hover {
     background: var(--danger);
+    transform: scale(1.05);
 }
 
 /* ================= SECTION VISUAL ================= */
 
 .builder-root .section-wrapper > * {
     border-radius: var(--radius-lg);
-    transition: 0.2s;
+    transition: 0.2s ease;
 }
 
 /* ================= PANEL HEADERS ================= */
 
-.panel h3 {
+.builder-root .panel h3 {
     font-size: 14px;
     margin-bottom: var(--space-sm);
     color: var(--text-fixed);
+    font-weight: 600;
 }
 
-.panel h4 {
+.builder-root .panel h4 {
     font-size: 11px;
     color: var(--text-muted-fixed);
     text-transform: uppercase;
@@ -266,11 +278,14 @@
 
 /* ================= DIVIDER ================= */
 
-.divider {
+.builder-root .divider {
     height: 1px;
     background: var(--border-fixed);
     margin: var(--space-sm) 0;
+    opacity: 0.7;
 }
+
+/* ================= SCROLL ================= */
 
 .sidebar,
 .panel,
@@ -286,4 +301,130 @@
 /* 🔥 ONLY lock body when builder is active */
 body.builder-active {
     overflow: hidden;
+}
+
+/* ===== SIDEBAR HEADER ===== */
+.sb-header {
+    padding: 12px 8px;
+    margin-bottom: 10px;
+}
+
+.logo {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+}
+
+/* ===== SECTION ===== */
+.sb-section {
+    margin-bottom: 18px;
+}
+
+.sb-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted-fixed);
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+/* ===== PRIMARY BUTTON ===== */
+.sb-primary {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+
+    background: linear-gradient(90deg, #06b6d4, #22d3ee);
+    color: black;
+    border: none;
+
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* ===== PAGE TABS ===== */
+.sb-tab {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+
+    background: transparent;
+    border: 1px solid var(--border-fixed);
+    color: var(--text-fixed);
+
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.sb-tab.active {
+    border-color: var(--accent-fixed);
+    background: rgba(0,212,255,0.08);
+}
+
+/* ===== GRID BUTTONS ===== */
+.sb-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.sb-grid button {
+    padding: 8px;
+    border-radius: 8px;
+
+    background: var(--surface2-fixed);
+    border: 1px solid var(--border-fixed);
+    color: var(--text-fixed);
+
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.sb-action {
+    width: 100%;
+    margin-bottom: 8px;
+    padding: 8px;
+
+    border-radius: 8px;
+    border: 1px solid var(--border-fixed);
+    background: var(--surface2-fixed);
+    color: var(--text-fixed);
+}
+
+/* ===== DANGER ===== */
+.danger {
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.builder-root .sidebar {
+    height: 100vh;
+    overflow-y: auto;
+    padding-bottom: 80px; /* 👈 gives breathing space at bottom */
+}
+
+.file-upload {
+    display: block;
+    width: 100%;
+    padding: 8px;
+
+    border-radius: 8px;
+    border: 1px dashed var(--border-fixed);
+
+    text-align: center;
+    font-size: 13px;
+
+    cursor: pointer;
+    color: var(--text-muted-fixed);
+    background: var(--surface2-fixed);
+}
+
+.file-upload:hover {
+    border-color: var(--accent-fixed);
+    color: var(--accent-fixed);
+}
+
+.file-upload input {
+    display: none;
 }

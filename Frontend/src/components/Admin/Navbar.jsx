@@ -17,9 +17,9 @@ export default function Navbar() {
 
             {/* LEFT */}
             <div className="navbar-left">
-                <span className="logo">CTFLite</span>
-                <span className="divider">//</span>
-                <span className="panel">Admin</span>
+                <span className="logo">ADMIN</span>
+                {/*<span className="divider">//</span>*/}
+                {/*<span className="panel">Admin</span>*/}
             </div>
 
             {/* CENTER */}
@@ -60,11 +60,16 @@ export default function Navbar() {
                     <span>  Config</span>
                 </NavLink>
 
-            </div>
+                <NavLink to="/admin/builder" className="nav-item">
+                    <Settings size={16} />
+                    <span>Customise UI</span>
+                </NavLink>
 
-            {/* RIGHT */}
-            <div className="navbar-right">
-                <div className="user">admin</div>
+                <NavLink to="/admin/themesettings" className="nav-item">
+                    <Settings size={16} />
+                    <span> Theme</span>
+                </NavLink>
+
             </div>
         </div>
     );

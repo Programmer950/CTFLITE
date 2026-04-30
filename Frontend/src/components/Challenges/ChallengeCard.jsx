@@ -22,7 +22,12 @@ export default function ChallengeCard({
             <div className="ch-card-header">
                 <div className="ch-card-title">
                     {name}
-                    {solved && <CheckCircle size={14} className="solved-icon" />}
+                    {solved && (
+                        <div className="solved-badge">
+                            <CheckCircle size={14} />
+                            <span>SOLVED</span>
+                        </div>
+                    )}
                 </div>
 
                 <span className={`diff-badge diff-${difficulty}`}>

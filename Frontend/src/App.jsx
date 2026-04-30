@@ -105,12 +105,6 @@ export default function App() {
                                 }
                             />
 
-                            {/* BUILDER */}
-                            <Route path="/builder" element={<BuilderPage />} />
-
-                            {/* THEME */}
-                            <Route path="/themesettings" element={<ThemeSettings />} />
-
                             {/* AUTH */}
                             <Route path="login" element={<Login />} />
                             <Route path="register" element={<Register />} />
@@ -134,6 +128,8 @@ export default function App() {
                                 <Route path="challenges/edit/:id" element={<EditChallenge />} />
                                 <Route path="submissions" element={<Submissions />} />
                                 <Route path="config" element={<Config />} />
+                                <Route path="themesettings" element={<ThemeSettings />} />
+                                <Route path="builder" element={<BuilderPage />} />
                             </Route>
 
                         </Routes>

@@ -1,14 +1,54 @@
 import { Trophy } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function ScoreboardPage() {
 
-    const players = [
-        { name: "HackerX", score: 1200, rank: 1 },
-        { name: "CyberPro", score: 950, rank: 2 },
-        { name: "NullX", score: 870, rank: 3 },
-        { name: "RootUser", score: 650, rank: 4 },
-        { name: "Shadow", score: 540, rank: 5 },
-    ];
+    const [players, setPlayers] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                const token = localStorage.getItem("token");
+
+                const res = await fetch("http://localhost:8080/api/scoreboard", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                const data = await res.json();
+
+                console.log("SCOREBOARD:", data);
+
+                // normalize + rank assign
+                if (Array.isArray(data)) {
+                    const sorted = data
+                        .sort((a, b) => b.score - a.score)
+                        .map((p, i) => ({
+                            ...p,
+                            rank: i + 1
+                        }));
+
+                    setPlayers(sorted);
+                } else {
+                    setPlayers([]);
+                }
+
+            } catch (err) {
+                console.error("Failed to fetch scoreboard", err);
+                setPlayers([]);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return <div className="page-wrapper">Loading scoreboard...</div>;
+    }
 
     return (
         <div className="page-wrapper">
@@ -28,11 +68,19 @@ export default function ScoreboardPage() {
             {/* TOP 3 */}
             <div className="top3">
 
-                {players.slice(0, 3).map((p, i) => (
-                    <div key={i} className={`top-card rank-${p.rank}`}>
+                {players.slice(0, 3).map((p) => (
+                    <div key={p.id || p.username} className={`top-card rank-${p.rank}`}>
+
                         <div className="top-rank">#{p.rank}</div>
-                        <div className="top-name">{p.name}</div>
-                        <div className="top-score">{p.score}</div>
+
+                        <div className="top-name">
+                            {p.username || p.name}
+                        </div>
+
+                        <div className="top-score">
+                            {p.score}
+                        </div>
+
                     </div>
                 ))}
 
@@ -47,10 +95,17 @@ export default function ScoreboardPage() {
                     <div>Score</div>
                 </div>
 
-                {players.map((p, i) => (
-                    <div key={i} className="sb-row">
+                {players.map((p) => (
+                    <div
+                        key={p.id || p.username}
+                        className={`sb-row ${p.rank <= 3 ? "top-player" : ""}`}
+                    >
                         <div className="sb-rank">#{p.rank}</div>
-                        <div className="sb-name">{p.name}</div>
+
+                        <div className="sb-name">
+                            {p.username || p.name}
+                        </div>
+
                         <div className="sb-score">{p.score}</div>
                     </div>
                 ))}

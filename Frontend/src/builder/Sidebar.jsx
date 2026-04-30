@@ -97,45 +97,73 @@ export default function Sidebar({ setPanelType, setCurrentPage, currentPage }) {
     return (
         <div className="sidebar">
 
-            {/* 🎨 THEME */}
-            <button
-                className="primary-btn"
-                onClick={() => setPanelType("theme")}
-            >
-                🎨 Theme Settings
-            </button>
+            {/* HEADER */}
+            <div className="sb-header">
+                <div className="logo">CTFLite</div>
+            </div>
 
-            {/* 📄 PAGE SWITCH */}
-            <div style={{ marginBottom: "10px" }}>
-                <button onClick={() => setCurrentPage("home")}>
+            {/* THEME */}
+            <div className="sb-section">
+                <button
+                    className="sb-primary"
+                    onClick={() => setPanelType("theme")}
+                >
+                    🎨 Theme Settings
+                </button>
+            </div>
+
+            {/* PAGES */}
+            <div className="sb-section">
+                <div className="sb-title">Pages</div>
+
+                <button
+                    className={`sb-tab ${currentPage === "home" ? "active" : ""}`}
+                    onClick={() => setCurrentPage("home")}
+                >
                     Home
                 </button>
-                <button onClick={() => setCurrentPage("rules")}>
+
+                <button
+                    className={`sb-tab ${currentPage === "rules" ? "active" : ""}`}
+                    onClick={() => setCurrentPage("rules")}
+                >
                     Rules
                 </button>
             </div>
 
-            {/* 🧩 WIDGETS */}
-            <div className="sidebar-group">
-                <h4>Add Sections</h4>
+            {/* ADD SECTIONS */}
+            <div className="sb-section">
+                <div className="sb-title">Add Sections</div>
 
-                <button onClick={() => addSection("hero")}>Hero</button>
-                <button onClick={() => addSection("stats")}>Stats</button>
-                <button onClick={() => addSection("categories")}>Categories</button>
-                <button onClick={() => addSection("challenge_list")}>Challenges</button>
-                <button onClick={() => addSection("scoreboard_preview")}>Scoreboard</button>
-                <button onClick={() => addSection("activity_feed")}>Activity</button>
-                <button onClick={() => addSection("cta")}>CTA</button>
-                <button onClick={() => addSection("features")}>Features</button>
+                <div className="sb-grid">
+                    <button onClick={() => addSection("hero")}>Hero</button>
+                    <button onClick={() => addSection("stats")}>Stats</button>
+                    <button onClick={() => addSection("categories")}>Categories</button>
+                    <button onClick={() => addSection("challenge_list")}>Challenges</button>
+                    <button onClick={() => addSection("scoreboard_preview")}>Scoreboard</button>
+                    <button onClick={() => addSection("activity_feed")}>Activity</button>
+                    <button onClick={() => addSection("cta")}>CTA</button>
+                    <button onClick={() => addSection("features")}>Features</button>
+                    <button onClick={() => addSection("rules_header")}>
+                        Rules Header
+                    </button>
+
+                    <button onClick={() => addSection("rule_box")}>
+                        Rule Box
+                    </button>
+                </div>
             </div>
 
-            {/* ⚙️ ACTIONS */}
-            <div className="sidebar-group">
-                <h4>Actions</h4>
+            {/* ACTIONS */}
+            <div className="sb-section">
+                <div className="sb-title">Actions</div>
 
-                <button onClick={handleSave}>Save to Server</button>
+                <button className="sb-action" onClick={handleSave}>
+                    Save to Server
+                </button>
 
                 <button
+                    className="sb-action"
                     onClick={() => {
                         const data = JSON.stringify(config, null, 2);
                         const blob = new Blob([data], { type: "application/json" });
@@ -151,37 +179,34 @@ export default function Sidebar({ setPanelType, setCurrentPage, currentPage }) {
                     Export Config
                 </button>
 
-                <button onClick={() => addSection("rules_header")}>Rules Header</button>
-                <button onClick={() => addSection("rule_box")}>Rule Box</button>
+                <label className="file-upload">
+                    Import Config
+                    <input
+                        type="file"
+                        accept="application/json"
+                        onChange={(e) => {
+                            const file = e.target.files[0];
+                            if (!file) return;
 
-                <input
-                    type="file"
-                    accept="application/json"
-                    onChange={(e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                                try {
+                                    const json = JSON.parse(event.target.result);
+                                    setConfig(json);
+                                } catch {
+                                    alert("Invalid JSON");
+                                }
+                            };
+                            reader.readAsText(file);
+                        }}
+                    />
+                </label>
 
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            try {
-                                const json = JSON.parse(event.target.result);
-                                setConfig(json);
-                            } catch {
-                                alert("Invalid JSON");
-                            }
-                        };
-                        reader.readAsText(file);
-                    }}
-                />
-
-                <button onClick={resetConfig}>
-                    Reset UI
-                </button>
-
-                <button onClick={() => window.location.reload()}>
-                    Reset UI
+                <button className="danger" onClick={resetConfig}>
+                    Reset Config
                 </button>
             </div>
+
         </div>
     );
 }
